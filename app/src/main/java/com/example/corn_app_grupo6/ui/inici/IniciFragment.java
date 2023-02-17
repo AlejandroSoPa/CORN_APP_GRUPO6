@@ -34,5 +34,4 @@ public class IniciFragment extends Fragment {
         mViewModel = new ViewModelProvider(this).get(IniciViewModel.class);
         // TODO: Use the ViewModel
     }
-
 }
