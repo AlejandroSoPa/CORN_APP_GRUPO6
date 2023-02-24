@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     public static int port = 443;
     public static String protocol = "https";
-    public static String host = "server-production-46ef.up.railway.app";
+    public static String host = "cornapigrupo6-production.up.railway.app";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
