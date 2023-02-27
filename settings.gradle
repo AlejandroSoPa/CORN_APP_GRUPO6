@@ -13,5 +13,12 @@ dependencyResolutionManagement {
         maven { url 'https://jitpack.io' }
     }
 }
+dependencyResolutionManagement {
+
+    repositories {
+
+        maven { url 'https://jitpack.io' }
+    }
+}
 rootProject.name = "CORN_APP_GRUPO6"
 include ':app'
