@@ -91,7 +91,7 @@ public class PerfilFragment extends Fragment {
 
                                 //info.setText("¡Usuari online!");
                                 System.out.println("Ha salido bien");
-
+                                MainActivity.user = Integer.valueOf(String.valueOf(telefon.getText()));
                                 //button.setEnabled(true);
                                 //telefon.setEnabled(false);
                                 //nombre.setEnabled(false);

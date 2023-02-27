@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <EditText
-            android:id="@+id/telefonnumber2"
+            android:id="@+id/cantidad"
             android:layout_width="150dp"
             android:layout_height="52dp"
             android:ems="10"
@@ -50,7 +50,7 @@
             app:layout_constraintVertical_bias="0.075" />
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/QR"
             android:layout_width="385dp"
             android:layout_height="385dp"
             app:layout_constraintBottom_toBottomOf="parent"
