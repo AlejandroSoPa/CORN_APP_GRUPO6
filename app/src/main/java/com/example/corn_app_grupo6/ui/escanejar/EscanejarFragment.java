@@ -173,7 +173,6 @@ public class EscanejarFragment extends Fragment {
 
                 }
 
-
             });
         } catch (JSONException e) {
             e.printStackTrace();
@@ -216,7 +215,6 @@ public class EscanejarFragment extends Fragment {
                     System.out.println("Excepcion");
 
                 }
-
 
             });
         } catch (JSONException e) {
