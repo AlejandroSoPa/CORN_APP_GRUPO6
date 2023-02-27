@@ -60,6 +60,7 @@ public class PerfilFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
         View vista = this.getView();
         button = this.getView().findViewById(R.id.butt);
         loading=this.getView().findViewById(R.id.progressBar);
@@ -83,7 +84,7 @@ public class PerfilFragment extends Fragment {
                     obj.put("name", cognoms.getText());
                     obj.put("surname", email.getText());
                     UtilsHTTP.sendPOST(MainActivity.protocol + "://" + MainActivity.host  + "/API/singup", obj.toString(), (response) -> {
-                        Looper.prepare();
+
                         JSONObject objResponse = null;
                         try {
                             objResponse = new JSONObject(response);
@@ -100,16 +101,24 @@ public class PerfilFragment extends Fragment {
                                 nombre.setEnabled(false);
                                 cognoms.setEnabled(false);
                                 email.setEnabled(false);
-                                Toast.makeText(activity, "Inici de sessió correcte", Toast.LENGTH_SHORT).show();
+                                activity.runOnUiThread(()->{Toast.makeText(activity, "Inici de sessió correcte", Toast.LENGTH_SHORT).show();});
                             }
                             else{
-                                Toast.makeText(activity, objResponse.getString("result"), Toast.LENGTH_SHORT).show();
+                                JSONObject finalObjResponse = objResponse;
+                                activity.runOnUiThread(()->{
+                                    try {
+                                        Toast.makeText(activity, finalObjResponse.getString("result"), Toast.LENGTH_SHORT).show();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+
                                 button.setEnabled(true);
 
                             }
                         } catch (Exception e) {
                             // TODO: handle exception
-                            Toast.makeText(activity, "ERROR-No s'ha pogut realitzar la conexió", Toast.LENGTH_SHORT).show();
+                            activity.runOnUiThread(()->{Toast.makeText(activity, "ERROR-No s'ha pogut realitzar la conexió", Toast.LENGTH_SHORT).show();});
                             button.setEnabled(true);
 
                         }
@@ -121,7 +130,7 @@ public class PerfilFragment extends Fragment {
                 catch (Exception w) {
                     // TODO: handle exception
                     Log.i("i",w.toString());
-                    Toast.makeText(activity, "ERROR-No s'ha pogut realitzar la conexió", Toast.LENGTH_SHORT).show();
+                    activity.runOnUiThread(()->{Toast.makeText(activity, "ERROR-No s'ha pogut realitzar la conexió", Toast.LENGTH_SHORT).show();});
                     button.setEnabled(true);
 
                 }
