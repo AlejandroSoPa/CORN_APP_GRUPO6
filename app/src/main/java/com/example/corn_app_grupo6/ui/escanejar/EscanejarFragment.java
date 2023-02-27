@@ -70,7 +70,7 @@ public class EscanejarFragment extends Fragment {
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(activity, result.getText(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(activity, result.getText(), Toast.LENGTH_SHORT).show();
                         if(MainActivity.user!=0){
                             start_payment(result);
                         }
@@ -164,13 +164,17 @@ public class EscanejarFragment extends Fragment {
                     }
                     else{
                         System.out.println("Ha salido mal");
-                        Toast.makeText(activity, objResponse.getString("result"), Toast.LENGTH_SHORT).show();
+                        activity.runOnUiThread(()->{Toast.makeText(activity, objResponse.getString("result"), Toast.LENGTH_SHORT).show();});
                         //info.setText("ERROR-No s'ha pogut realitzar la conexio");
                     }
                 } catch (Exception e) {
                     // TODO: handle exception
                     System.out.println("Excepcion");
-
+                    try {
+                        activity.runOnUiThread(()->{Toast.makeText(activity, objResponse.getString("result"), Toast.LENGTH_SHORT).show();});
+                    } catch (JSONException ex) {
+                        ex.printStackTrace();
+                    }
                 }
 
             });
@@ -203,12 +207,12 @@ public class EscanejarFragment extends Fragment {
                     if (objResponse.getString("status").equals("OK")) {
 
                         System.out.println("Ha salido bien, transaccion finalizada");
-                        Toast.makeText(activity, objResponse.getString("result"), Toast.LENGTH_SHORT).show();
+                        activity.runOnUiThread(()->{Toast.makeText(activity, objResponse.getString("result"), Toast.LENGTH_SHORT).show();});
 
                     }
                     else{
                         System.out.println("Ha salido mal");
-                        Toast.makeText(activity, objResponse.getString("result"), Toast.LENGTH_SHORT).show();
+                        activity.runOnUiThread(()->{Toast.makeText(activity, objResponse.getString("result"), Toast.LENGTH_SHORT).show();});
                     }
                 } catch (Exception e) {
                     // TODO: handle exception
