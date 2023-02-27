@@ -8,11 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.corn_app_grupo6.MainActivity;
@@ -30,6 +32,7 @@ public class PerfilFragment extends Fragment {
     private EditText cognoms;
     private EditText email;
     private Button button;
+    private TextView info;
 
     public static PerfilFragment newInstance() {
         return new PerfilFragment();
@@ -39,23 +42,40 @@ public class PerfilFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_perfil, container, false);
-        button = root.findViewById(R.id.butt);
+
+        return inflater.inflate(R.layout.fragment_perfil, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mViewModel = new ViewModelProvider(this).get(PerfilViewModel.class);
+        // TODO: Use the ViewModel
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        View vista = this.getView();
+        button = this.getView().findViewById(R.id.butt);
+        info=this.getView().findViewById(R.id.info);
         button.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
+
                 try{
                     button.setEnabled(false);
                     JSONObject obj = new JSONObject("{}");
-                    telefon = telefon.findViewById(R.id.telefonnumber);
-                    nombre = nombre.findViewById(R.id.name);
-                    cognoms = cognoms.findViewById(R.id.surname);
-                    email = email.findViewById(R.id.email);
+                    telefon = vista.findViewById(R.id.telefonnumber);
+                    nombre = vista.findViewById(R.id.name);
+                    cognoms = vista.findViewById(R.id.surname);
+                    email = vista.findViewById(R.id.email);
 
-                    obj.put("phone", String.valueOf(telefon.getText()));
-                    obj.put("email", String.valueOf(nombre.getText()));
-                    obj.put("name", String.valueOf(cognoms.getText()));
-                    obj.put("surname", String.valueOf(email.getText()));
-                    UtilsHTTP.sendPOST(MainActivity.protocol + "://" + MainActivity.host + ":" + MainActivity.port + "/API/signup", obj.toString(), (response) -> {
+                    obj.put("phone", telefon.getText());
+                    obj.put("email", nombre.getText());
+                    obj.put("name", cognoms.getText());
+                    obj.put("surname", email.getText());
+                    UtilsHTTP.sendPOST(MainActivity.protocol + "://" + MainActivity.host  + "/API/singup", obj.toString(), (response) -> {
 
                         JSONObject objResponse = null;
                         try {
@@ -65,39 +85,43 @@ public class PerfilFragment extends Fragment {
                         }
 
                         try {
-
+                            Log.i("c",objResponse.getString("result"));
                             if (objResponse.getString("status").equals("OK")) {
                                 // ha ido bien
+
+                                //info.setText("¡Usuari online!");
                                 System.out.println("Ha salido bien");
+
+                                //button.setEnabled(true);
+                                //telefon.setEnabled(false);
+                                //nombre.setEnabled(false);
+                                //cognoms.setEnabled(false);
+                                //email.setEnabled(false);
                             }
                             else{
                                 System.out.println("Ha salido mal");
+
                                 // Ha ido mal
-                                //Info.setText("ERROR-No s'ha pogut realitzar la conexio");
+                                //info.setText("ERROR-No s'ha pogut realitzar la conexio");
                             }
                         } catch (Exception e) {
                             // TODO: handle exception
                             System.out.println("Excepcion");
-                            //Info.setText("ERROR-No s'ha pogut realitzar la conexio");
+                            info.setText("ERROR-No s'ha pogut realitzar la conexio");
                         }
 
-                        button.setEnabled(true);
+
                     });
+                    button.setEnabled(true);
                 }
                 catch (Exception w) {
                     // TODO: handle exception
-                    //Info.setText("ERROR-No s'ha pogut realitzar la conexió");
+                    Log.i("i",w.toString());
+                    info.setText("ERROR-No s'ha pogut realitzar la conexió");
                     button.setEnabled(true);
+
                 }
             }
         });
-        return inflater.inflate(R.layout.fragment_perfil, container, false);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(PerfilViewModel.class);
-        // TODO: Use the ViewModel
     }
 }
