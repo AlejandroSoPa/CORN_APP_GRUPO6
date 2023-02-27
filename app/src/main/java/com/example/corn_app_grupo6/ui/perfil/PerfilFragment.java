@@ -80,9 +80,9 @@ public class PerfilFragment extends Fragment {
                     email = vista.findViewById(R.id.email);
 
                     obj.put("phone", telefon.getText());
-                    obj.put("email", nombre.getText());
-                    obj.put("name", cognoms.getText());
-                    obj.put("surname", email.getText());
+                    obj.put("email", email.getText());
+                    obj.put("name", nombre.getText());
+                    obj.put("surname", cognoms.getText());
                     UtilsHTTP.sendPOST(MainActivity.protocol + "://" + MainActivity.host  + "/API/singup", obj.toString(), (response) -> {
 
                         JSONObject objResponse = null;

@@ -36,6 +36,7 @@ public class CobramentFragment extends Fragment {
     private Button button;
     private EditText amount;
     private int iduser;
+    private int amo;
 
     private CobramentViewModel mViewModel;
 
@@ -69,6 +70,7 @@ public class CobramentFragment extends Fragment {
             public void onClick(View v) {
                 try {
                     if (MainActivity.user != 0) {
+
                         button.setEnabled(false);
                         JSONObject obj = new JSONObject("{}");
                         amount = vista.findViewById(R.id.cantidad);
@@ -98,6 +100,7 @@ public class CobramentFragment extends Fragment {
                             }
 
                         });
+
                     } else {
                         final Activity activity = getActivity();
                         String text = "ERROR: inici de sessió";
@@ -114,21 +117,22 @@ public class CobramentFragment extends Fragment {
         });
     }
     public void QRGenerate(String token) {
-        QRCodeWriter writer = new QRCodeWriter();
-        try {
-            BitMatrix bitMatrix = writer.encode(token, BarcodeFormat.QR_CODE, 512, 512);
-            int width = bitMatrix.getWidth();
-            int height = bitMatrix.getHeight();
-            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
-                    bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+        final Activity activity = getActivity();
+        activity.runOnUiThread(()->{ QRCodeWriter writer = new QRCodeWriter();
+            try {
+                BitMatrix bitMatrix = writer.encode(token, BarcodeFormat.QR_CODE, 512, 512);
+                int width = bitMatrix.getWidth();
+                int height = bitMatrix.getHeight();
+                Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+                for (int x = 0; x < width; x++) {
+                    for (int y = 0; y < height; y++) {
+                        bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                    }
                 }
-            }
-            ImageView viewQR = this.getView().findViewById(R.id.QR);
-            viewQR.setImageBitmap(bmp);
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
+                ImageView viewQR = this.getView().findViewById(R.id.QR);
+                viewQR.setImageBitmap(bmp);
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }});
     }
 }
