@@ -97,11 +97,12 @@ public class PerfilFragment extends Fragment {
                             if (objResponse.getString("status").equals("OK")) {
 
                                 MainActivity.user = Integer.valueOf(String.valueOf(telefon.getText()));
+                                activity.runOnUiThread(()->{
                                 telefon.setEnabled(false);
                                 nombre.setEnabled(false);
                                 cognoms.setEnabled(false);
                                 email.setEnabled(false);
-                                activity.runOnUiThread(()->{Toast.makeText(activity, "Inici de sessió correcte", Toast.LENGTH_SHORT).show();});
+                                Toast.makeText(activity, "Inici de sessió correcte", Toast.LENGTH_SHORT).show();});
                             }
                             else{
                                 JSONObject finalObjResponse = objResponse;
@@ -118,8 +119,9 @@ public class PerfilFragment extends Fragment {
                             }
                         } catch (Exception e) {
                             // TODO: handle exception
+                            Log.i("i",e.toString());
                             activity.runOnUiThread(()->{Toast.makeText(activity, "ERROR-No s'ha pogut realitzar la conexió", Toast.LENGTH_SHORT).show();});
-                            button.setEnabled(true);
+                            activity.runOnUiThread(()->{button.setEnabled(true);});
 
                         }
                         loading.setVisibility(View.INVISIBLE);
