@@ -15,6 +15,10 @@ import com.example.corn_app_grupo6.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    public static int port = 443;
+    public static String protocol = "https";
+    public static String host = "cornapigrupo6-production.up.railway.app";
+    public static int user=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +31,12 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
+                R.id.navigation_inici, R.id.navigation_perfil, R.id.navigation_cobrament, R.id.navigation_escanejar, R.id.navigation_historial)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+
     }
 
 }
