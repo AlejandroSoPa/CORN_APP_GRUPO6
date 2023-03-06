@@ -95,6 +95,7 @@ public class SignupActivity extends AppCompatActivity {
                                     PerfilFragment.telefonn=(String.valueOf(data.getInt("phone")));
                                     PerfilFragment.nombree=(data.getString("name"));
                                     PerfilFragment.wallett=(String.valueOf(data.getInt("wallet")));
+                                    Fragments.user=data.getInt("phone");
 
                                     startActivity(intent);
                                 }

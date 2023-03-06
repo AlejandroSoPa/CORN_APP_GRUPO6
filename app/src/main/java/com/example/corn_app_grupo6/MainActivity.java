@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
                             PerfilFragment.telefonn=(String.valueOf(data.getInt("phone")));
                             PerfilFragment.nombree=(data.getString("name"));
                             PerfilFragment.wallett=(String.valueOf(data.getInt("wallet")));
+                            Fragments.user=data.getInt("phone");
                             startActivity(intent);
                         }
                     } catch (JSONException e) {
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
                                 PerfilFragment.cognomss=(data.getString("surname"));
                                 PerfilFragment.emaill=(data.getString("email"));
                                 PerfilFragment.telefonn=(String.valueOf(data.getInt("phone")));
+                                Fragments.user=data.getInt("phone");
                                 PerfilFragment.nombree=(data.getString("name"));
                                 PerfilFragment.wallett=(String.valueOf(data.getInt("wallet")));
                                 startActivity(intent);
