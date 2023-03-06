@@ -3,7 +3,6 @@ package com.example.corn_app_grupo6.ui.escanejar;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.app.Activity;
@@ -27,6 +26,7 @@ import android.widget.Toast;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
+import com.example.corn_app_grupo6.Fragments;
 import com.example.corn_app_grupo6.MainActivity;
 import com.example.corn_app_grupo6.utils.UtilsHTTP;
 import com.google.zxing.Result;
@@ -71,7 +71,7 @@ public class EscanejarFragment extends Fragment {
                     @Override
                     public void run() {
                         //Toast.makeText(activity, result.getText(), Toast.LENGTH_SHORT).show();
-                        if(MainActivity.user!=0){
+                        if(Fragments.user!=0){
                             start_payment(result);
                         }
                         else{
@@ -120,9 +120,10 @@ public class EscanejarFragment extends Fragment {
         try {
             final Activity activity = getActivity();
             JSONObject obj = new JSONObject("{}");
-            obj.put("phone", MainActivity.user);
+            obj.put("phone", Fragments.user);
             obj.put("token", result.getText());
-            UtilsHTTP.sendPOST(MainActivity.protocol + "://" + MainActivity.host  + "/API/start_payment", obj.toString(), (response) -> {
+            obj.put("session", MainActivity.session);
+            UtilsHTTP.sendPOST(Fragments.protocol + "://" + Fragments.host  + "/API/start_payment", obj.toString(), (response) -> {
 
                 JSONObject objResponse = null;
                 try {
@@ -198,12 +199,13 @@ public class EscanejarFragment extends Fragment {
         try {
             final Activity activity = getActivity();
             obj = new JSONObject("{}");
-            obj.put("phone", MainActivity.user);
+            obj.put("phone", Fragments.user);
             obj.put("token", json.get("token"));
             obj.put("accept", true);
             obj.put("amount", json.get("Quantitat"));
+            obj.put("session", MainActivity.session);
 
-            UtilsHTTP.sendPOST(MainActivity.protocol + "://" + MainActivity.host  + "/API/finish_payment", obj.toString(), (response) -> {
+            UtilsHTTP.sendPOST(Fragments.protocol + "://" + Fragments.host  + "/API/finish_payment", obj.toString(), (response) -> {
 
                 JSONObject objResponse = null;
                 try {

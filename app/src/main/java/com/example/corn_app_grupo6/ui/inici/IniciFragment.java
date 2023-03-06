@@ -1,7 +1,10 @@
 package com.example.corn_app_grupo6.ui.inici;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.corn_app_grupo6.R;
 
@@ -33,5 +37,22 @@ public class IniciFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(IniciViewModel.class);
         // TODO: Use the ViewModel
+    }
+
+    @Override
+    public void onStart() {
+
+        super.onStart();
+        View vista = this.getView();
+        Button b=vista.findViewById(R.id.logout);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPref = getDefaultSharedPreferences(vista.getContext());
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(getString(R.string.token), "noToken");
+                editor.commit();
+            }
+        });
     }
 }
