@@ -4,6 +4,7 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -16,11 +17,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.corn_app_grupo6.Fragments;
+import com.example.corn_app_grupo6.MainActivity;
 import com.example.corn_app_grupo6.R;
 
 public class IniciFragment extends Fragment {
 
     private IniciViewModel mViewModel;
+
 
     public static IniciFragment newInstance() {
         return new IniciFragment();
@@ -44,6 +48,7 @@ public class IniciFragment extends Fragment {
 
         super.onStart();
         View vista = this.getView();
+        final Intent intent = new Intent(super.getActivity(), MainActivity.class);
         Button b=vista.findViewById(R.id.logout);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +57,7 @@ public class IniciFragment extends Fragment {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString(getString(R.string.token), "noToken");
                 editor.commit();
+                startActivity(intent);
             }
         });
     }
