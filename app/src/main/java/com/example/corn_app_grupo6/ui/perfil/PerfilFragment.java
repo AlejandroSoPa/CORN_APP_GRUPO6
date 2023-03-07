@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.corn_app_grupo6.MainActivity;
+import com.example.corn_app_grupo6.Fragments;
 import com.example.corn_app_grupo6.R;
 import com.example.corn_app_grupo6.utils.UtilsHTTP;
 
@@ -30,10 +29,12 @@ import org.json.JSONObject;
 public class PerfilFragment extends Fragment {
 
     private PerfilViewModel mViewModel;
-    private EditText telefon;
-    private EditText nombre;
-    private EditText cognoms;
-    private EditText email;
+    public static EditText telefon;
+    public static EditText nombre;
+    public static EditText cognoms;
+    public static EditText email;
+    public static EditText wallet;
+    public static String telefonn,nombree,cognomss,emaill,wallett;
     private Button button;
     private TextView info;
     private ProgressBar loading;
@@ -62,10 +63,21 @@ public class PerfilFragment extends Fragment {
         super.onStart();
 
         View vista = this.getView();
-        button = this.getView().findViewById(R.id.butt);
+        //button = this.getView().findViewById(R.id.butt);
         loading=this.getView().findViewById(R.id.progressBar);
         info=this.getView().findViewById(R.id.info);
         final Activity activity = getActivity();
+        wallet=vista.findViewById(R.id.wallet);
+        wallet.setText(wallett);
+        telefon=vista.findViewById(R.id.telefonnumber);
+        telefon.setText(telefonn);
+        nombre=vista.findViewById(R.id.name);
+        nombre.setText(nombree);
+        cognoms=vista.findViewById(R.id.surname);
+        cognoms.setText(cognomss);
+        email=vista.findViewById(R.id.email);
+        email.setText(emaill);
+        /*
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,7 +95,7 @@ public class PerfilFragment extends Fragment {
                     obj.put("email", email.getText());
                     obj.put("name", nombre.getText());
                     obj.put("surname", cognoms.getText());
-                    UtilsHTTP.sendPOST(MainActivity.protocol + "://" + MainActivity.host  + "/API/singup", obj.toString(), (response) -> {
+                    UtilsHTTP.sendPOST(Fragments.protocol + "://" + Fragments.host  + "/API/singup", obj.toString(), (response) -> {
 
                         JSONObject objResponse = null;
                         try {
@@ -96,12 +108,13 @@ public class PerfilFragment extends Fragment {
                             Log.i("c",objResponse.getString("result"));
                             if (objResponse.getString("status").equals("OK")) {
 
-                                MainActivity.user = Integer.valueOf(String.valueOf(telefon.getText()));
+                                Fragments.user = Integer.valueOf(String.valueOf(telefon.getText()));
+                                activity.runOnUiThread(()->{
                                 telefon.setEnabled(false);
                                 nombre.setEnabled(false);
                                 cognoms.setEnabled(false);
                                 email.setEnabled(false);
-                                activity.runOnUiThread(()->{Toast.makeText(activity, "Inici de sessió correcte", Toast.LENGTH_SHORT).show();});
+                                Toast.makeText(activity, "Inici de sessió correcte", Toast.LENGTH_SHORT).show();});
                             }
                             else{
                                 JSONObject finalObjResponse = objResponse;
@@ -118,8 +131,9 @@ public class PerfilFragment extends Fragment {
                             }
                         } catch (Exception e) {
                             // TODO: handle exception
+                            Log.i("i",e.toString());
                             activity.runOnUiThread(()->{Toast.makeText(activity, "ERROR-No s'ha pogut realitzar la conexió", Toast.LENGTH_SHORT).show();});
-                            button.setEnabled(true);
+                            activity.runOnUiThread(()->{button.setEnabled(true);});
 
                         }
                         loading.setVisibility(View.INVISIBLE);
@@ -135,6 +149,6 @@ public class PerfilFragment extends Fragment {
 
                 }
             }
-        });
+        });*/
     }
 }

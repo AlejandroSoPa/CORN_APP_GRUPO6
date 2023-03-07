@@ -1,42 +1,146 @@
 package com.example.corn_app_grupo6;
 
-import android.os.Bundle;
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
-import com.example.corn_app_grupo6.databinding.ActivityMainBinding;
+import com.example.corn_app_grupo6.ui.perfil.PerfilFragment;
+import com.example.corn_app_grupo6.utils.UtilsHTTP;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
-
-    private ActivityMainBinding binding;
-    public static int port = 443;
-    public static String protocol = "https";
-    public static String host = "cornapigrupo6-production.up.railway.app";
-    public static int user=0;
-
+    public static String session;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+        Button log = findViewById(R.id.buttonlog);
+        Button sing = findViewById(R.id.buttonsign);
+        EditText mail = findViewById(R.id.email_login);
+        EditText pass = findViewById(R.id.passwd);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        final Intent intent = new Intent(this, Fragments.class);
+        final Intent sign=new Intent(this, SignupActivity.class);
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_inici, R.id.navigation_perfil, R.id.navigation_cobrament, R.id.navigation_escanejar, R.id.navigation_historial)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
+        SharedPreferences sharedPref = getDefaultSharedPreferences(this.getBaseContext());
+        String token = sharedPref.getString(getString(R.string.token),"noToken");
+        Log.i("i", token);
 
+        final Activity activity = this;
+        if(token!="noToken") {
+            try {
+                JSONObject obj = new JSONObject("{}");
+
+                obj.put("session",token);
+                UtilsHTTP.sendPOST(Fragments.protocol + "://" + Fragments.host + "/API/login", obj.toString(), (response) -> {
+
+                    JSONObject objResponse = null;
+                    try {
+                        objResponse = new JSONObject(response);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        Log.i("c", objResponse.getString("result"));
+                        if (objResponse.getString("status").equals("OK")) {
+                            this.session=token;
+
+                            JSONObject data= objResponse.getJSONObject("data");
+                            PerfilFragment.cognomss=(data.getString("surname"));
+                            PerfilFragment.emaill=(data.getString("email"));
+                            PerfilFragment.telefonn=(String.valueOf(data.getInt("phone")));
+                            PerfilFragment.nombree=(data.getString("name"));
+                            PerfilFragment.wallett=(String.valueOf(data.getInt("wallet")));
+                            Fragments.user=data.getInt("phone");
+                            startActivity(intent);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            ;
+        };
+
+
+        log.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    JSONObject obj = new JSONObject("{}");
+
+                    obj.put("email", mail.getText());
+                    obj.put("password", pass.getText());
+                    UtilsHTTP.sendPOST(Fragments.protocol + "://" + Fragments.host + "/API/login", obj.toString(), (response) -> {
+
+                        JSONObject objResponse = null;
+                        try {
+                            objResponse = new JSONObject(response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            Log.i("c", objResponse.getString("result"));
+                            if (objResponse.getString("status").equals("OK")) {
+                                MainActivity.session=objResponse.getString("result");
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putString(getString(R.string.token), objResponse.getString("result"));
+                                editor.commit();
+
+                                JSONObject data= objResponse.getJSONObject("data");
+                                PerfilFragment.cognomss=(data.getString("surname"));
+                                PerfilFragment.emaill=(data.getString("email"));
+                                PerfilFragment.telefonn=(String.valueOf(data.getInt("phone")));
+                                Fragments.user=data.getInt("phone");
+                                PerfilFragment.nombree=(data.getString("name"));
+                                PerfilFragment.wallett=(String.valueOf(data.getInt("wallet")));
+                                startActivity(intent);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            JSONObject finalObjResponse1 = objResponse;
+                            activity.runOnUiThread(()->{
+                                try {
+                                    Toast.makeText(activity, finalObjResponse1.getString("result"), Toast.LENGTH_SHORT).show();
+                                } catch (JSONException es) {
+                                    es.printStackTrace();
+                                }});
+                        }
+                    });
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
+                }
+                ;
+            }
+        });
+        sing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(sign);
+            }
+        });
     }
 
 }

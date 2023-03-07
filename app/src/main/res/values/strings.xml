@@ -5,4 +5,6 @@
     <string name="title_cobrament">Cobrament</string>
     <string name="title_escanejar">Escanejar</string>
     <string name="title_historial">Historial</string>
+    <string name="login">LOGIN</string>
+    <string name="token">session_token</string>
 </resources>

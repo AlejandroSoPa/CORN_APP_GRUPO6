@@ -17,9 +17,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.corn_app_grupo6.Fragments;
 import com.example.corn_app_grupo6.MainActivity;
 import com.example.corn_app_grupo6.R;
 import com.example.corn_app_grupo6.utils.UtilsHTTP;
@@ -63,20 +63,21 @@ public class CobramentFragment extends Fragment {
         View vista = this.getView();
         button = vista.findViewById(R.id.crear);
         button.setEnabled(true);
-        iduser = MainActivity.user;
+        iduser = Fragments.user;
         System.out.println(iduser);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    if (MainActivity.user != 0) {
+                    if (Fragments.user != 0) {
 
                         button.setEnabled(false);
                         JSONObject obj = new JSONObject("{}");
                         amount = vista.findViewById(R.id.cantidad);
                         obj.put("phone", iduser);
                         obj.put("amount", amount.getText());
-                        UtilsHTTP.sendPOST(MainActivity.protocol + "://" + MainActivity.host + "/API/setup_payment", obj.toString(), (response) -> {
+                        obj.put("session", MainActivity.session);
+                        UtilsHTTP.sendPOST(Fragments.protocol + "://" + Fragments.host + "/API/setup_payment", obj.toString(), (response) -> {
 
                             JSONObject objResponse = null;
                             try {
