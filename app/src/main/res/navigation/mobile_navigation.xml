@@ -3,23 +3,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_inici">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.example.corn_app_grupo6.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/navigation_inici"
+        android:name="com.example.corn_app_grupo6.ui.inici.IniciFragment"
+        android:label="@string/title_inici"
+        tools:layout="@layout/fragment_inici" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.corn_app_grupo6.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_perfil"
+        android:name="com.example.corn_app_grupo6.ui.perfil.PerfilFragment"
+        android:label="@string/title_perfil"
+        tools:layout="@layout/fragment_perfil" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.corn_app_grupo6.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_cobrament"
+        android:name="com.example.corn_app_grupo6.ui.cobrament.CobramentFragment"
+        android:label="@string/title_cobrament"
+        tools:layout="@layout/fragment_cobrament" />
+
+    <fragment
+        android:id="@+id/navigation_escanejar"
+        android:name="com.example.corn_app_grupo6.ui.escanejar.EscanejarFragment"
+        android:label="@string/title_escanejar"
+        tools:layout="@layout/fragment_escanejar" />
+
+    <fragment
+        android:id="@+id/navigation_historial"
+        android:name="com.example.corn_app_grupo6.ui.historial.HistorialFragment"
+        android:label="@string/title_historial"
+        tools:layout="@layout/fragment_historial" />
 </navigation>

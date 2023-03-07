@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">CORN_APP_GRUPO6</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_inici">Inici</string>
+    <string name="title_perfil">Perfil</string>
+    <string name="title_cobrament">Cobrament</string>
+    <string name="title_escanejar">Escanejar</string>
+    <string name="title_historial">Historial</string>
+    <string name="login">LOGIN</string>
+    <string name="token">session_token</string>
 </resources>
