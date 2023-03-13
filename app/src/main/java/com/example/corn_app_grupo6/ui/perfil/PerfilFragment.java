@@ -2,11 +2,17 @@ package com.example.corn_app_grupo6.ui.perfil;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,12 +30,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.corn_app_grupo6.FileUtil;
 import com.example.corn_app_grupo6.Fragments;
 import com.example.corn_app_grupo6.R;
 import com.example.corn_app_grupo6.utils.UtilsHTTP;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Base64;
 
 public class PerfilFragment extends Fragment {
 
@@ -44,6 +56,10 @@ public class PerfilFragment extends Fragment {
     private Button button;
     private TextView info;
     private ProgressBar loading;
+    public ActivityResultLauncher<Intent> someActivityResultLauncher ;
+    public static int RC_PHOTO_PICKER = 0;
+    public Uri photoURI;
+    private static String tipo_img;
 
     public static PerfilFragment newInstance() {
         return new PerfilFragment();
@@ -55,6 +71,8 @@ public class PerfilFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_perfil, container, false);
 
         return inflater.inflate(R.layout.fragment_perfil, container, false);
+
+
     }
 
     @Override
@@ -85,7 +103,83 @@ public class PerfilFragment extends Fragment {
         email.setText(emaill);
         circle=vista.findViewById(R.id.circu);
 
+        this.someActivityResultLauncher= registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            // There are no request codes
+                            Intent data = result.getData();
+                            Uri uri = data.getData();
+                            File imagen = new File("");
+                            try {
+                                imagen = FileUtil.from(getContext(), uri);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            byte[] fileContent = new byte[0];
 
+                            try {
+                                fileContent = Files.readAllBytes(imagen.toPath());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            String base64 = Base64.getEncoder().encodeToString(fileContent);
+
+                            try {
+                                JSONObject obj = new JSONObject("{}");
+
+                                SharedPreferences sharedPref = getDefaultSharedPreferences(vista.getContext());
+                                String token = sharedPref.getString(getString(R.string.token),"noToken");
+                                obj.put("session", token);
+                                obj.put(tipo_img, base64);
+                                UtilsHTTP.sendPOST(Fragments.protocol + "://" + Fragments.host  + "/API/send_id", obj.toString(), (response) -> {
+
+                                    JSONObject objResponse = null;
+                                    try {
+                                        objResponse = new JSONObject(response);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    try {
+                                        //Log.i("c",objResponse.getString("result"));
+                                        if (objResponse.getString("status").equals("OK")) {
+                                            activity.runOnUiThread(()->{Toast.makeText(activity, "La imatge s'ha enviat correctament", Toast.LENGTH_SHORT).show();});
+                                        }
+                                    } catch (JSONException e) {
+                                            e.printStackTrace();
+                                    }
+                                });
+                            } catch(Exception e) {
+                                // TODO: handle exception
+                                Log.i("i",e.toString());
+                                activity.runOnUiThread(()->{Toast.makeText(activity, "ERROR-No s'ha pogut realitzar la conexió", Toast.LENGTH_SHORT).show();});
+
+                            }
+                        }
+                    }
+                });
+
+        Button b=vista.findViewById(R.id.boton_DNI);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tipo_img = "front";
+                openSomeActivityForResult(null);
+            }
+        });
+
+        Button b2=vista.findViewById(R.id.boton_DNI_trasero);
+        b2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tipo_img = "back";
+                openSomeActivityForResult(null);
+            }
+        });
                 try{
                     loading.setVisibility(View.VISIBLE);
 
@@ -180,5 +274,13 @@ public class PerfilFragment extends Fragment {
 
                 }
 
+    }
+    public void openSomeActivityForResult(View view) {
+        //Create Intent
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/jpg");
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        //Launch activity to get result
+        someActivityResultLauncher.launch(intent);
     }
 }
