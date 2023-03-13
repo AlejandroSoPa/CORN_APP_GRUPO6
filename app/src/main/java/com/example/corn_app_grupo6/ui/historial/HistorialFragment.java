@@ -80,30 +80,17 @@ public class HistorialFragment extends Fragment {
                             if (objResponse.getString("status").equals("OK")) {
                                 JSONArray data= objResponse.getJSONArray("result");
 
-                                // TODO put items on list
-                                /*
-                                for (int i = 0; i < data.length(); i++) {
-                                    Log.i("i",data.getJSONObject(i).getString("text"));
-                                    TextView t =new TextView(getContext());
-                                    t.setText(data.getJSONObject(i).getString("text"));
-
-
-
-                                }*/
                                 ArrayList<String> r=new ArrayList<>();
                                 for (int i = 0; i < data.length(); i++) {
                                     Log.i("i",data.getJSONObject(i).getString("text"));
                                     r.add(data.getJSONObject(i).getString("text"));
-                                    r.add("adsa");
-
+                                    
                                 }
                                 ArrayAdapter<String> arraicita=new ArrayAdapter<>(activity.getBaseContext(),android.R.layout.simple_list_item_1,r);
                                 linear.setAdapter(arraicita);
                                 arraicita.notifyDataSetChanged();
                                 Log.i("i",r.toString());
                             }
-
-
 
                         } catch (JSONException e) {
                             e.printStackTrace();
