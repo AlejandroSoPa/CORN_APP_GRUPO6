@@ -10,6 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/circu"
+            android:layout_width="68dp"
+            android:layout_height="63dp"
+            android:src="@drawable/circle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.107"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.803" />
+
         <EditText
             android:id="@+id/wallet"
             android:layout_width="150dp"
@@ -66,18 +78,18 @@
 
         <EditText
             android:id="@+id/email"
-            android:layout_width="150dp"
-            android:layout_height="52dp"
+            android:layout_width="235dp"
+            android:layout_height="54dp"
             android:ems="10"
             android:inputType="textEmailAddress"
             android:paddingLeft="26dp"
             android:paddingRight="26dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.551"
+            app:layout_constraintHorizontal_bias="0.818"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.553" />
+            app:layout_constraintVertical_bias="0.552" />
 
         <TextView
             android:id="@+id/textView5"
@@ -147,14 +159,14 @@
 
         <TextView
             android:id="@+id/info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="209dp"
+            android:layout_height="50dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.386"
+            app:layout_constraintHorizontal_bias="0.673"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.858" />
+            app:layout_constraintVertical_bias="0.807" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -182,6 +194,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.657" />
+
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

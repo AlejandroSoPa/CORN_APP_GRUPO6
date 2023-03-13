@@ -1,8 +1,12 @@
 package com.example.corn_app_grupo6.ui.perfil;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +39,7 @@ public class PerfilFragment extends Fragment {
     public static EditText cognoms;
     public static EditText email;
     public static EditText wallet;
+    public static ImageView circle;
     public static String telefonn,nombree,cognomss,emaill,wallett;
     private Button button;
     private TextView info;
@@ -77,25 +83,18 @@ public class PerfilFragment extends Fragment {
         cognoms.setText(cognomss);
         email=vista.findViewById(R.id.email);
         email.setText(emaill);
-        /*
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        circle=vista.findViewById(R.id.circu);
+
 
                 try{
                     loading.setVisibility(View.VISIBLE);
-                    button.setEnabled(false);
-                    JSONObject obj = new JSONObject("{}");
-                    telefon = vista.findViewById(R.id.telefonnumber);
-                    nombre = vista.findViewById(R.id.name);
-                    cognoms = vista.findViewById(R.id.surname);
-                    email = vista.findViewById(R.id.email);
 
-                    obj.put("phone", telefon.getText());
-                    obj.put("email", email.getText());
-                    obj.put("name", nombre.getText());
-                    obj.put("surname", cognoms.getText());
-                    UtilsHTTP.sendPOST(Fragments.protocol + "://" + Fragments.host  + "/API/singup", obj.toString(), (response) -> {
+                    JSONObject obj = new JSONObject("{}");
+
+                    SharedPreferences sharedPref = getDefaultSharedPreferences(vista.getContext());
+                    String token = sharedPref.getString(getString(R.string.token),"noToken");
+                    obj.put("session", token);
+                    UtilsHTTP.sendPOST(Fragments.protocol + "://" + Fragments.host  + "/API/get_profile", obj.toString(), (response) -> {
 
                         JSONObject objResponse = null;
                         try {
@@ -105,38 +104,69 @@ public class PerfilFragment extends Fragment {
                         }
 
                         try {
-                            Log.i("c",objResponse.getString("result"));
+                            //Log.i("c",objResponse.getString("result"));
                             if (objResponse.getString("status").equals("OK")) {
+                                JSONObject finalObjResponse =objResponse.getJSONObject("result");
 
-                                Fragments.user = Integer.valueOf(String.valueOf(telefon.getText()));
                                 activity.runOnUiThread(()->{
-                                telefon.setEnabled(false);
-                                nombre.setEnabled(false);
-                                cognoms.setEnabled(false);
-                                email.setEnabled(false);
-                                Toast.makeText(activity, "Inici de sessió correcte", Toast.LENGTH_SHORT).show();});
-                            }
+                                // TODO here logic info
+                                    try {
+                                        nombre.setText(finalObjResponse.getString("name"));
+                                        cognoms.setText(finalObjResponse.getString("surname"));
+                                        email.setText(finalObjResponse.getString("email"));
+                                        telefon.setText(String.valueOf( finalObjResponse.getInt("phone")));
+                                        wallet.setText(String.valueOf( finalObjResponse.getInt("wallet")));
+                                        switch(finalObjResponse.getInt("status")) {
+                                            case 1:
+                                                circle.setImageDrawable(getResources().getDrawable(R.drawable.blue));
+                                                info.setText("NO VERIFICAT");
+                                                break;
+                                            case 2:
+                                                circle.setImageDrawable(getResources().getDrawable(R.drawable.orange));
+                                                info.setText("A VERIFICAR");
+                                                break;
+                                            case 3:
+                                                circle.setImageDrawable(getResources().getDrawable(R.drawable.yellow));
+                                                info.setText("ACEPTAT");
+                                                break;
+                                            case 4:
+                                                circle.setImageDrawable(getResources().getDrawable(R.drawable.circle));
+                                                info.setText("REFUSAT");
+                                                break;
+                                            default:
+
+                                                break;
+                                        }
+                                        loading.setVisibility(View.INVISIBLE);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    //status.setText(finalObjResponse.getString("status"));
+                                //Toast.makeText(activity, "Inici de sessió correcte", Toast.LENGTH_SHORT).show();});
+                            });}
                             else{
                                 JSONObject finalObjResponse = objResponse;
                                 activity.runOnUiThread(()->{
                                     try {
+                                        loading.setVisibility(View.INVISIBLE);
                                         Toast.makeText(activity, finalObjResponse.getString("result"), Toast.LENGTH_SHORT).show();
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
                                 });
 
-                                button.setEnabled(true);
+
 
                             }
                         } catch (Exception e) {
                             // TODO: handle exception
                             Log.i("i",e.toString());
                             activity.runOnUiThread(()->{Toast.makeText(activity, "ERROR-No s'ha pogut realitzar la conexió", Toast.LENGTH_SHORT).show();});
-                            activity.runOnUiThread(()->{button.setEnabled(true);});
+                            activity.runOnUiThread(()->{loading.setVisibility(View.INVISIBLE);});
 
                         }
-                        loading.setVisibility(View.INVISIBLE);
+
                     });
 
 
@@ -144,11 +174,11 @@ public class PerfilFragment extends Fragment {
                 catch (Exception w) {
                     // TODO: handle exception
                     Log.i("i",w.toString());
-                    activity.runOnUiThread(()->{Toast.makeText(activity, "ERROR-No s'ha pogut realitzar la conexió", Toast.LENGTH_SHORT).show();});
-                    button.setEnabled(true);
+                    activity.runOnUiThread(()->{Toast.makeText(activity, "ERROR-No s'ha pogut realitzar la conexió", Toast.LENGTH_SHORT).show();
+                        loading.setVisibility(View.INVISIBLE);});
+
 
                 }
-            }
-        });*/
+
     }
 }
