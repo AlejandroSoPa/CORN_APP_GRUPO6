@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -57,6 +58,7 @@ public class PerfilFragment extends Fragment {
     private TextView info;
     private ProgressBar loading;
     public ActivityResultLauncher<Intent> someActivityResultLauncher ;
+    public ActivityResultLauncher<Intent> someActivityResultLauncher2 ;
     public static int RC_PHOTO_PICKER = 0;
     public Uri photoURI;
     private static String tipo_img;
@@ -69,8 +71,139 @@ public class PerfilFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_perfil, container, false);
+        SharedPreferences sharedPref = getDefaultSharedPreferences(this.getContext());
+        this.someActivityResultLauncher= registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            // There are no request codes
+                            Intent data = result.getData();
+                            Uri uri = data.getData();
+                            File imagen = new File("");
+                            try {
+                                imagen = FileUtil.from(getContext(), uri);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            byte[] fileContent = new byte[0];
 
+                            try {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    fileContent = Files.readAllBytes(imagen.toPath());
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            String base64 = null;
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                base64 = Base64.getEncoder().encodeToString(fileContent);
+                            }
+
+                            try {
+                                JSONObject obj = new JSONObject("{}");
+
+
+                                String token = sharedPref.getString(getString(R.string.token),"noToken");
+                                obj.put("session", token);
+                                obj.put("front", base64);
+                                UtilsHTTP.sendPOST(Fragments.protocol + "://" + Fragments.host  + "/API/send_id", obj.toString(), (response) -> {
+
+                                    JSONObject objResponse = null;
+                                    try {
+                                        objResponse = new JSONObject(response);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    try {
+                                        //Log.i("c",objResponse.getString("result"));
+                                        if (objResponse.getString("status").equals("OK")) {
+                                            getActivity().runOnUiThread(()->{Toast.makeText(getActivity(), "La imatge s'ha enviat correctament", Toast.LENGTH_SHORT).show();});
+                                        }
+                                    } catch (JSONException ew) {
+                                        ew.printStackTrace();
+                                        Log.i("i",ew.toString());
+                                    }
+                                });
+                            } catch(Exception e) {
+                                // TODO: handle exception
+                                Log.i("i",e.toString());
+                                getActivity().runOnUiThread(()->{Toast.makeText(getActivity(), "ERROR-No s'ha pogut realitzar la conexió", Toast.LENGTH_SHORT).show();});
+
+                            }
+                        }
+                    }
+                });
+        this.someActivityResultLauncher2= registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            // There are no request codes
+                            Intent data = result.getData();
+                            Uri uri = data.getData();
+                            File imagen = new File("");
+                            try {
+                                imagen = FileUtil.from(getContext(), uri);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            byte[] fileContent = new byte[0];
+
+                            try {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    fileContent = Files.readAllBytes(imagen.toPath());
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            String base64 = null;
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                base64 = Base64.getEncoder().encodeToString(fileContent);
+                            }
+
+                            try {
+                                JSONObject obj = new JSONObject("{}");
+
+
+                                String token = sharedPref.getString(getString(R.string.token),"noToken");
+                                obj.put("session", token);
+                                obj.put("back", base64);
+                                UtilsHTTP.sendPOST(Fragments.protocol + "://" + Fragments.host  + "/API/send_id", obj.toString(), (response) -> {
+
+                                    JSONObject objResponse = null;
+                                    try {
+                                        objResponse = new JSONObject(response);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    try {
+                                        //Log.i("c",objResponse.getString("result"));
+                                        if (objResponse.getString("status").equals("OK")) {
+                                            getActivity().runOnUiThread(()->{Toast.makeText(getActivity(), "La imatge s'ha enviat correctament", Toast.LENGTH_SHORT).show();});
+                                        }
+                                    } catch (JSONException ew) {
+                                        ew.printStackTrace();
+                                        Log.i("i",ew.toString());
+                                    }
+                                });
+                            } catch(Exception e) {
+                                // TODO: handle exception
+                                Log.i("i",e.toString());
+                                getActivity().runOnUiThread(()->{Toast.makeText(getActivity(), "ERROR-No s'ha pogut realitzar la conexió", Toast.LENGTH_SHORT).show();});
+
+                            }
+                        }
+                    }
+                });
         return inflater.inflate(R.layout.fragment_perfil, container, false);
+
 
 
     }
@@ -103,65 +236,7 @@ public class PerfilFragment extends Fragment {
         email.setText(emaill);
         circle=vista.findViewById(R.id.circu);
 
-        this.someActivityResultLauncher= registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            // There are no request codes
-                            Intent data = result.getData();
-                            Uri uri = data.getData();
-                            File imagen = new File("");
-                            try {
-                                imagen = FileUtil.from(getContext(), uri);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            byte[] fileContent = new byte[0];
 
-                            try {
-                                fileContent = Files.readAllBytes(imagen.toPath());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-
-                            String base64 = Base64.getEncoder().encodeToString(fileContent);
-
-                            try {
-                                JSONObject obj = new JSONObject("{}");
-
-                                SharedPreferences sharedPref = getDefaultSharedPreferences(vista.getContext());
-                                String token = sharedPref.getString(getString(R.string.token),"noToken");
-                                obj.put("session", token);
-                                obj.put(tipo_img, base64);
-                                UtilsHTTP.sendPOST(Fragments.protocol + "://" + Fragments.host  + "/API/send_id", obj.toString(), (response) -> {
-
-                                    JSONObject objResponse = null;
-                                    try {
-                                        objResponse = new JSONObject(response);
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    try {
-                                        //Log.i("c",objResponse.getString("result"));
-                                        if (objResponse.getString("status").equals("OK")) {
-                                            activity.runOnUiThread(()->{Toast.makeText(activity, "La imatge s'ha enviat correctament", Toast.LENGTH_SHORT).show();});
-                                        }
-                                    } catch (JSONException e) {
-                                            e.printStackTrace();
-                                    }
-                                });
-                            } catch(Exception e) {
-                                // TODO: handle exception
-                                Log.i("i",e.toString());
-                                activity.runOnUiThread(()->{Toast.makeText(activity, "ERROR-No s'ha pogut realitzar la conexió", Toast.LENGTH_SHORT).show();});
-
-                            }
-                        }
-                    }
-                });
 
         Button b=vista.findViewById(R.id.boton_DNI);
         b.setOnClickListener(new View.OnClickListener() {
@@ -177,7 +252,7 @@ public class PerfilFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 tipo_img = "back";
-                openSomeActivityForResult(null);
+                openSomeActivityForResult2(null);
             }
         });
                 try{
@@ -282,5 +357,13 @@ public class PerfilFragment extends Fragment {
         intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         //Launch activity to get result
         someActivityResultLauncher.launch(intent);
+    }
+    public void openSomeActivityForResult2(View view) {
+        //Create Intent
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/jpg");
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        //Launch activity to get result
+        someActivityResultLauncher2.launch(intent);
     }
 }
