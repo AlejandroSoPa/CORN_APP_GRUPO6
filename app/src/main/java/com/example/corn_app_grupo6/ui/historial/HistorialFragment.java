@@ -84,7 +84,7 @@ public class HistorialFragment extends Fragment {
                                 for (int i = 0; i < data.length(); i++) {
                                     Log.i("i",data.getJSONObject(i).getString("text"));
                                     r.add(data.getJSONObject(i).getString("text"));
-                                    
+
                                 }
                                 ArrayAdapter<String> arraicita=new ArrayAdapter<>(activity.getBaseContext(),android.R.layout.simple_list_item_1,r);
                                 linear.setAdapter(arraicita);

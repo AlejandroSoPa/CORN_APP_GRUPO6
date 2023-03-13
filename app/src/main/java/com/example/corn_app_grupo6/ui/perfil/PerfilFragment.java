@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +39,7 @@ public class PerfilFragment extends Fragment {
     public static EditText cognoms;
     public static EditText email;
     public static EditText wallet;
+    public static ImageView circle;
     public static String telefonn,nombree,cognomss,emaill,wallett;
     private Button button;
     private TextView info;
@@ -80,6 +83,8 @@ public class PerfilFragment extends Fragment {
         cognoms.setText(cognomss);
         email=vista.findViewById(R.id.email);
         email.setText(emaill);
+        circle=vista.findViewById(R.id.circu);
+
 
                 try{
                     loading.setVisibility(View.VISIBLE);
@@ -111,7 +116,27 @@ public class PerfilFragment extends Fragment {
                                         email.setText(finalObjResponse.getString("email"));
                                         telefon.setText(String.valueOf( finalObjResponse.getInt("phone")));
                                         wallet.setText(String.valueOf( finalObjResponse.getInt("wallet")));
+                                        switch(finalObjResponse.getInt("status")) {
+                                            case 1:
+                                                circle.setImageDrawable(getResources().getDrawable(R.drawable.blue));
+                                                info.setText("NO VERIFICAT");
+                                                break;
+                                            case 2:
+                                                circle.setImageDrawable(getResources().getDrawable(R.drawable.orange));
+                                                info.setText("A VERIFICAR");
+                                                break;
+                                            case 3:
+                                                circle.setImageDrawable(getResources().getDrawable(R.drawable.yellow));
+                                                info.setText("ACEPTAT");
+                                                break;
+                                            case 4:
+                                                circle.setImageDrawable(getResources().getDrawable(R.drawable.circle));
+                                                info.setText("REFUSAT");
+                                                break;
+                                            default:
 
+                                                break;
+                                        }
                                         loading.setVisibility(View.INVISIBLE);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
